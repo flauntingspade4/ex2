@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "*.orig": "toml",
+        "firewall.h": "c"
+    }
+}
