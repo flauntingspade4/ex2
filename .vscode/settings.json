@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "*.orig": "toml",
-        "firewall.h": "c"
+        "firewall.h": "c",
+        "type_traits": "c"
     }
 }
