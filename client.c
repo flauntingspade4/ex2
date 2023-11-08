@@ -17,6 +17,27 @@ void error(char *msg)
     exit(0);
 }
 
+void create_message(char *args[], char *buf)
+{
+    switch (toupper(args[0][0]))
+    {
+        case 'A':
+        sprintf(buf, "0 %s %s", args[1], args[2]);
+        break;
+        case 'C':
+        sprintf(buf, "1 %s %s", args[1], args[2]);
+        break;
+        case 'D':
+        sprintf(buf, "2 %s %s", args[1], args[2]);
+        break;
+        case 'L':
+        sprintf(buf, "3");
+        break;
+        default:
+        break;
+    }
+}
+
 int main(int argc, char *argv[])
 {
     int sockfd, n;
@@ -25,7 +46,7 @@ int main(int argc, char *argv[])
     int res;
 
     char buffer[BUFFERLENGTH];
-    if (argc < 3)
+    if (argc < 5)
     {
         fprintf(stderr, "usage %s hostname port command [command args]\n", argv[0]);
         exit(1);
@@ -76,12 +97,14 @@ int main(int argc, char *argv[])
     /* prepare message */
     printf("Please enter the message: ");
     bzero(buffer, BUFFERLENGTH);
-    fgets(buffer, BUFFERLENGTH, stdin);
+
+    create_message(argv + 3 * sizeof(char *), buffer);
 
     /* send message */
     n = write(sockfd, buffer, strlen(buffer));
-    if (n < 0)
+    if (n < 0) {
         error("ERROR writing to socket");
+    }
     bzero(buffer, BUFFERLENGTH);
 
     /* wait for reply */

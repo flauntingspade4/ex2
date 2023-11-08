@@ -1,10 +1,13 @@
 CFLAGS=-Wall -Werror -g -pthread
 
-TARGETS=server
+TARGETS=server client
 
 all: $(TARGETS)
 
 server: firewall.o server.o
+	$(CC) $(CFLAGS) $^ -o $@
+
+client: client.o
 	$(CC) $(CFLAGS) $^ -o $@
 
 %.o: %.c
