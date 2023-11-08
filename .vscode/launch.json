@@ -8,8 +8,8 @@
             "name": "Launch",
             "type": "lldb",
             "request": "launch",
-            "program": "${workspaceFolder}/server.exe",
-            "preLaunchTask": "build_server"
+            "program": "${workspaceFolder}/ ",
+            "preLaunchTask": "build_server;make_executable"
         }
     ]
 }

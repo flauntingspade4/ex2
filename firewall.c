@@ -25,13 +25,13 @@ Entry empty_entry()
 void _reallocate(List *list)
 {
 
-    // printf("Before realloc %p %d\n", list->array, sizeof(Entry) * list->capacity);
+    // printf("Before realloc %p %zd\n", list->array, sizeof(Entry) * list->capacity);
     // print_list(list);
-    list->capacity = list->capacity * 2 + 2;
+    list->capacity = list->capacity * 2 + 3;
 
     list->array = realloc((void *)list->array, sizeof(Entry) * list->capacity);
 
-    // printf("After realloc %p %d\n", list->array, sizeof(Entry) * list->capacity);
+    // printf("After realloc %p %zd\n", list->array, sizeof(Entry) * list->capacity);
     // print_list(list);
 
     if (!list->array)
@@ -143,7 +143,7 @@ void print_list(const List *list)
     for (int i = 0; i < list->length; i++)
     {
         // printf("Doing %d\n", i);
-        print_entry(nth(list, i));
+        print_entry(list->array + sizeof(Entry) * i);
     }
 }
 
@@ -215,7 +215,7 @@ int parse_address(const char *str, unsigned char addresses[2][4], int len)
     return 0;
 }
 
-int parse_port(const char *str, int ports[2])
+int parse_port(const char *str, unsigned int ports[2])
 {
     int len = strlen(str);
 
@@ -275,7 +275,7 @@ int port_valid(Entry *entry, unsigned char address[4], unsigned int port)
         return 1;
     }
 
-    if (entry->port[1] != 0 && (entry->port[0] <= port && port >= entry->port[1]))
+    if (entry->port[1] != 0 && (entry->port[0] <= port && port <= entry->port[1]))
     {
         push_matched(&(entry->matched), address, port);
 
