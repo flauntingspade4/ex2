@@ -25,14 +25,14 @@ Entry empty_entry()
 void _reallocate(List *list)
 {
 
-    printf("Before realloc %p %d\n", list->array, sizeof(Entry) * list->capacity);
-    print_list(list);
-    list->capacity = list->capacity * 2 + 3;
+    // printf("Before realloc %p %d\n", list->array, sizeof(Entry) * list->capacity);
+    // print_list(list);
+    list->capacity = list->capacity * 2 + 2;
 
     list->array = realloc((void *)list->array, sizeof(Entry) * list->capacity);
 
-    printf("After realloc %p %d\n", list->array, sizeof(Entry) * list->capacity);
-    print_list(list);
+    // printf("After realloc %p %d\n", list->array, sizeof(Entry) * list->capacity);
+    // print_list(list);
 
     if (!list->array)
     {
@@ -126,14 +126,14 @@ void free_list(List *list)
 
 void print_matched(MatchedQueries *matched)
 {
-    printf("Printing matched %p\n", matched);
+    /*printf("Printing matched %p\n", matched);
 
     if (matched)
     {
         printf("Query: %d.%d.%d.%d %d\n", matched->address[0], matched->address[1], matched->address[2], matched->address[3], matched->port);
 
         print_matched(matched->next);
-    }
+    }*/
 }
 
 void print_list(const List *list)
