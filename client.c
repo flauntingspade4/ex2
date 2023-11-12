@@ -53,6 +53,12 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
+    /* prepare message */
+    bzero(buffer, BUFFERLENGTH);
+
+    create_message(argv, buffer);
+    printf("Sending %s\n", buffer);
+
     /* Obtain address(es) matching host/port */
     /* code taken from the manual page for getaddrinfo */
 
@@ -94,12 +100,6 @@ int main(int argc, char *argv[])
     }
 
     freeaddrinfo(result);
-
-    /* prepare message */
-    bzero(buffer, BUFFERLENGTH);
-
-    create_message(argv, buffer);
-    printf("Sending %s\n", buffer);
 
     /* send message */
     n = write(sockfd, buffer, strlen(buffer));
