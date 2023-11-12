@@ -25,14 +25,9 @@ Entry empty_entry()
 void _reallocate(List *list)
 {
 
-    // printf("Before realloc %p %zd\n", list->array, sizeof(Entry) * list->capacity);
-    // print_list(list);
     list->capacity = list->capacity * 2 + 3;
 
     list->array = realloc((void *)list->array, sizeof(Entry) * list->capacity);
-
-    // printf("After realloc %p %zd\n", list->array, sizeof(Entry) * list->capacity);
-    // print_list(list);
 
     if (!list->array)
     {
@@ -84,8 +79,6 @@ void push_matched(MatchedQueries **matched, unsigned char address[4], unsigned i
         new_matched.port = port;
         new_matched.next = NULL;
 
-        printf("Here\n");
-
         *matched = malloc(sizeof(MatchedQueries));
 
         if (!(*matched))
@@ -124,59 +117,52 @@ void free_list(List *list)
     }
 }
 
-void print_matched(MatchedQueries *matched)
+void print_matched(char *f, MatchedQueries *matched)
 {
-    /*printf("Printing matched %p\n", matched);
-
     if (matched)
     {
-        printf("Query: %d.%d.%d.%d %d\n", matched->address[0], matched->address[1], matched->address[2], matched->address[3], matched->port);
+        sprintf(f, "Query: %d.%d.%d.%d %d\n", matched->address[0], matched->address[1], matched->address[2], matched->address[3], matched->port);
 
-        print_matched(matched->next);
-    }*/
-}
-
-void print_list(const List *list)
-{
-    printf("Printing all\n");
-
-    for (int i = 0; i < list->length; i++)
-    {
-        // printf("Doing %d\n", i);
-        print_entry(list->array + sizeof(Entry) * i);
+        print_matched(f, matched->next);
     }
 }
 
-void print_entry(const Entry *entry)
+void print_list(char *f, const List *list)
 {
-    printf("Rule: ");
+    for (int i = 0; i < list->length; i++)
+    {
+        print_entry(f, list->array + sizeof(Entry) * i);
+    }
+}
+
+void print_entry(char *f, const Entry *entry)
+{
+    sprintf(f, "Rule: ");
 
     if (memcmp(entry->address[1], (int[]){0, 0, 0, 0}, sizeof(entry->address[1])) == 0)
     {
         if (entry->port[1] == 0)
         {
-            printf("%d.%d.%d.%d %d\n", entry->address[0][0], entry->address[0][1], entry->address[0][2], entry->address[0][3], entry->port[0]);
+            sprintf(f, "%d.%d.%d.%d %d\n", entry->address[0][0], entry->address[0][1], entry->address[0][2], entry->address[0][3], entry->port[0]);
         }
         else
         {
-            printf("%d.%d.%d.%d %d-%d\n", entry->address[0][0], entry->address[0][1], entry->address[0][2], entry->address[0][3], entry->port[0], entry->port[1]);
+            sprintf(f, "%d.%d.%d.%d %d-%d\n", entry->address[0][0], entry->address[0][1], entry->address[0][2], entry->address[0][3], entry->port[0], entry->port[1]);
         }
     }
     else
     {
         if (entry->port[1] == 0)
         {
-            printf("%d.%d.%d.%d-%d.%d.%d.%d %d\n", entry->address[0][0], entry->address[0][1], entry->address[0][2], entry->address[0][3], entry->address[1][0], entry->address[1][1], entry->address[1][2], entry->address[1][3], entry->port[0]);
+            sprintf(f, "%d.%d.%d.%d-%d.%d.%d.%d %d\n", entry->address[0][0], entry->address[0][1], entry->address[0][2], entry->address[0][3], entry->address[1][0], entry->address[1][1], entry->address[1][2], entry->address[1][3], entry->port[0]);
         }
         else
         {
-            printf("%d.%d.%d.%d-%d.%d.%d.%d %d-%d\n", entry->address[0][0], entry->address[0][1], entry->address[0][2], entry->address[0][3], entry->address[1][0], entry->address[1][1], entry->address[1][2], entry->address[1][3], entry->port[0], entry->port[1]);
+            sprintf(f, "%d.%d.%d.%d-%d.%d.%d.%d %d-%d\n", entry->address[0][0], entry->address[0][1], entry->address[0][2], entry->address[0][3], entry->address[1][0], entry->address[1][1], entry->address[1][2], entry->address[1][3], entry->port[0], entry->port[1]);
         }
     }
 
-    print_matched(entry->matched);
-
-    printf("Printed matched\n");
+    print_matched(f, entry->matched);
 }
 
 int parse_address(const char *str, unsigned char addresses[2][4], int len)

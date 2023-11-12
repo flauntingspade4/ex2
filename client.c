@@ -17,6 +17,28 @@ void error(char *msg)
     exit(0);
 }
 
+void create_message(char *args[], char *buf)
+{
+    switch (toupper(args[3][0]))
+    {
+    case 'A':
+        sprintf(buf, "0 %s %s", args[4], args[5]);
+        break;
+    case 'C':
+        sprintf(buf, "1 %s %s", args[4], args[5]);
+        break;
+    case 'D':
+        sprintf(buf, "2 %s %s", args[4], args[5]);
+        break;
+    case 'L':
+        sprintf(buf, "3");
+        break;
+    default:
+        printf("Incorrect arguments");
+        break;
+    }
+}
+
 int main(int argc, char *argv[])
 {
     int sockfd, n;
@@ -25,7 +47,7 @@ int main(int argc, char *argv[])
     int res;
 
     char buffer[BUFFERLENGTH];
-    if (argc < 3)
+    if (argc < 4)
     {
         fprintf(stderr, "usage %s hostname port command [command args]\n", argv[0]);
         exit(1);
@@ -35,10 +57,10 @@ int main(int argc, char *argv[])
     /* code taken from the manual page for getaddrinfo */
 
     memset(&hints, 0, sizeof(struct addrinfo));
-    hints.ai_family = AF_UNSPEC;     /* Allow IPv4 or IPv6 */
-    hints.ai_socktype = SOCK_STREAM; /* Datagram socket */
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = 0;
-    hints.ai_protocol = 0; /* Any protocol */
+    hints.ai_protocol = 0;
 
     res = getaddrinfo(argv[1], argv[2], &hints, &result);
     if (res != 0)
@@ -60,34 +82,39 @@ int main(int argc, char *argv[])
             continue;
 
         if (connect(sockfd, rp->ai_addr, rp->ai_addrlen) != -1)
-            break; /* Success */
+            break;
 
         close(sockfd);
     }
 
     if (rp == NULL)
-    { /* No address succeeded */
+    {
         fprintf(stderr, "Could not connect\n");
         exit(EXIT_FAILURE);
     }
 
-    freeaddrinfo(result); /* No longer needed */
+    freeaddrinfo(result);
 
     /* prepare message */
-    printf("Please enter the message: ");
     bzero(buffer, BUFFERLENGTH);
-    fgets(buffer, BUFFERLENGTH, stdin);
+
+    create_message(argv, buffer);
+    printf("Sending %s\n", buffer);
 
     /* send message */
     n = write(sockfd, buffer, strlen(buffer));
     if (n < 0)
+    {
         error("ERROR writing to socket");
+    }
     bzero(buffer, BUFFERLENGTH);
 
     /* wait for reply */
     n = read(sockfd, buffer, BUFFERLENGTH - 1);
     if (n < 0)
+    {
         error("ERROR reading from socket");
+    }
     printf("%s\n", buffer);
     close(sockfd);
     return 0;

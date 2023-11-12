@@ -23,8 +23,8 @@ typedef struct Entry
     struct MatchedQueries *matched;
 } Entry;
 
-void print_list(const List *);
-void print_entry(const Entry *);
+void print_list(char *, const List *);
+void print_entry(char *, const Entry *);
 Entry empty_entry();
 int compare(const Entry *lhs, const Entry *rhs);
 
